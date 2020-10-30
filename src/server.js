@@ -1,12 +1,13 @@
 let express = require("express");
 let bodyParser = require("body-parser");
+let bcrypt = require("bcrypt-nodejs");
 
 let app = express();
 
 app.use(bodyParser.json());
 
 // Database
-let database = 
+let database =
 {
   users:
   [
@@ -25,6 +26,14 @@ let database =
       password: "bananas",
       entries: 0,
       joined: new Date()
+    }
+  ],
+  login:
+  [
+    {
+       id: "987",
+       hash: "",
+       email: "new@gmail.com"
     }
   ]
 };
@@ -52,6 +61,10 @@ app.post("/signin", (req, res) =>
 app.post("/register", (req, res) =>
 {
   let {email, name, password} = req.body;
+  bcrypt.hash(password, null, null, function(err, hash)
+  {
+    console.log(hash);
+  });
   database.users.push(
   {
     id: "125",
@@ -98,6 +111,15 @@ app.put("/image", (req, res) =>
   if(!found)
   res.status(400).json("Not Found");
 });
+
+// // Load hash from your password DB.
+// bcrypt.compare("bacon", hash, function(err, res) {
+//   // res == true
+// });
+// bcrypt.compare("veggies", hash, function(err, res) {
+//   // res = false
+// });
+
 
 app.listen(3000, () =>
 {
